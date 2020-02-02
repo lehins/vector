@@ -246,7 +246,19 @@ infixl 9 !?
 v !? i | i < 0 || i >= length v = Nothing
        | otherwise              = Just $ unsafeIndex v i
 
--- | /O(1)/ First element
+-- | /O(1)/ Extract the first element of a vector. This is a partial function and will
+-- throw an error if the supplied vector is empty. Consider using a safer alternative
+-- @(v `!?` 0)@. A monadic variant `headM` is also available.
+--
+-- ====__Examples__
+--
+-- For usage examples see:
+--
+-- * @Data.Vector.`Data.Vector.head`@
+-- * @Data.Vector.Primitive.`Data.Vector.Primitive.head`@
+-- * @Data.Vector.Storable.`Data.Vector.Storable.head`@
+-- * @Data.Vector.Unboxed.`Data.Vector.Unboxed.head`@
+--
 head :: Vector v a => v a -> a
 {-# INLINE_FUSED head #-}
 head v = v ! 0
@@ -261,6 +273,7 @@ unsafeIndex :: Vector v a => v a -> Int -> a
 {-# INLINE_FUSED unsafeIndex #-}
 unsafeIndex v i = UNSAFE_CHECK(checkIndex) "unsafeIndex" i (length v)
                 $ unId (basicUnsafeIndexM v i)
+
 
 -- | /O(1)/ First element without checking if the vector is empty
 unsafeHead :: Vector v a => v a -> a

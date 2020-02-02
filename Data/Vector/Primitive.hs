@@ -324,10 +324,18 @@ null = G.null
 {-# INLINE (!?) #-}
 (!?) = (G.!?)
 
--- | /O(1)/ First element
+-- | /O(1)/ First element. See `G.head` for more info.
+--
+-- ====__Examples__
+--
+-- >>> import Data.Vector.Primitive as VP
+-- >>> VP.head $ VP.fromList [1,2,3,4::Int]
+-- 1
+--
 head :: Prim a => Vector a -> a
 {-# INLINE head #-}
 head = G.head
+
 
 -- | /O(1)/ Last element
 last :: Prim a => Vector a -> a
