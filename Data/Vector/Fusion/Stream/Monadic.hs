@@ -56,6 +56,7 @@ module Data.Vector.Fusion.Stream.Monadic (
   -- * Unfolding
   unfoldr, unfoldrM,
   unfoldrN, unfoldrNM,
+  unfoldrExactN, unfoldrExactNM,
   iterateN, iterateNM,
 
   -- * Scans
@@ -1116,6 +1117,21 @@ unfoldrNM m f t = Stream step (t,m)
                                  Just (x,s') -> Yield x (s',n-1)
                                  Nothing     -> Done
                              ) (f s)
+
+-- | Unfold exactly @n@ elements
+unfoldrExactN :: Monad m => Int -> (s -> (a, s)) -> s -> Stream m a
+{-# INLINE_FUSED unfoldrExactN #-}
+unfoldrExactN n f = unfoldrExactNM n (return . f)
+
+-- | Unfold exactly @n@ elements with a monadic functions
+unfoldrExactNM :: Monad m => Int -> (s -> m (a, s)) -> s -> Stream m a
+{-# INLINE_FUSED unfoldrExactNM #-}
+unfoldrExactNM m f t = Stream step (t,m)
+  where
+    {-# INLINE_INNER step #-}
+    step (s,n) | n <= 0    = return Done
+               | otherwise = do (x,s') <- f s
+                                return $ Yield x (s',n-1)
 
 -- | Apply monadic function n times to value. Zeroth element is original value.
 iterateNM :: Monad m => Int -> (a -> m a) -> a -> Stream m a
