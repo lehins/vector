@@ -1376,7 +1376,17 @@ filterM f = unstreamM . Bundle.filterM f . stream
 -- without copying.
 takeWhile :: Vector v a => (a -> Bool) -> v a -> v a
 {-# INLINE takeWhile #-}
-takeWhile f = unstream . Bundle.takeWhile f . stream
+takeWhile f = unstream . Bundle.takeWhile (sliceTakeWhile f) f . stream
+
+sliceTakeWhile :: Vector v a => (a -> Bool) -> v a -> v a
+{-# INLINE sliceTakeWhile #-}
+sliceTakeWhile f v = take (go 0) v
+  where
+    k = length v
+    go i
+      | i < k && f (unsafeIndex v i) = go (i + 1)
+      | otherwise = i
+
 
 -- | /O(n)/ Drop the longest prefix of elements that satisfy the predicate
 -- without copying.
@@ -2079,6 +2089,7 @@ stream v = v `seq` n `seq` (Bundle.unfoldr get 0 `Bundle.sized` Exact n)
 -- | /O(n)/ Construct a vector from a 'Bundle'
 unstream :: Vector v a => Bundle v a -> v a
 {-# INLINE unstream #-}
+unstream (MBundle.Bundle {MBundle.sVector = Just v}) = v
 unstream s = new (New.unstream s)
 
 {-# RULES

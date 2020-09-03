@@ -461,9 +461,9 @@ filterM :: Monad m => (a -> m Bool) -> Bundle m v a -> Bundle m v a
 filterM f Bundle{sElems = s, sSize = n} = fromStream (S.filterM f s) (toMax n)
 
 -- | Longest prefix of elements that satisfy the predicate
-takeWhile :: Monad m => (a -> Bool) -> Bundle m v a -> Bundle m v a
+takeWhile :: Monad m => (v a -> v a) -> (a -> Bool) -> Bundle m v a -> Bundle m v a
 {-# INLINE takeWhile #-}
-takeWhile f = takeWhileM (return . f)
+takeWhile vf f b@(Bundle {sVector = mv}) = (takeWhileM (return . f) b) { sVector = fmap vf mv }
 
 -- | Longest prefix of elements that satisfy the monadic predicate
 takeWhileM :: Monad m => (a -> m Bool) -> Bundle m v a -> Bundle m v a

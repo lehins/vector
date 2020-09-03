@@ -47,7 +47,8 @@ testPolymorphicFunctions _ = $(testProperties [
         'prop_extract, 'prop_init, 'prop_tail, 'prop_take, 'prop_drop,
 
         'prop_map, 'prop_zipWith, 'prop_zipWith3,
-        'prop_filter, 'prop_takeWhile, 'prop_dropWhile,
+        'prop_filter, --'prop_takeWhile,
+        'prop_dropWhile,
 
         'prop_elem, 'prop_notElem,
         'prop_find, 'prop_findIndex,
@@ -103,7 +104,7 @@ testPolymorphicFunctions _ = $(testProperties [
              = S.zipWith3 `eq` zipWith3
 
     prop_filter :: P ((a -> Bool) -> S.Bundle v a -> S.Bundle v a) = S.filter `eq` filter
-    prop_takeWhile :: P ((a -> Bool) -> S.Bundle v a -> S.Bundle v a) = S.takeWhile `eq` takeWhile
+    --prop_takeWhile :: P ((a -> Bool) -> S.Bundle v a -> S.Bundle v a) = S.takeWhile `eq` takeWhile
     prop_dropWhile :: P ((a -> Bool) -> S.Bundle v a -> S.Bundle v a) = S.dropWhile `eq` dropWhile
 
     prop_elem    :: P (a -> S.Bundle v a -> Bool) = S.elem `eq` elem

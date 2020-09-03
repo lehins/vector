@@ -336,7 +336,7 @@ filter :: (a -> Bool) -> Bundle v a -> Bundle v a
 filter = M.filter
 
 -- | Longest prefix of elements that satisfy the predicate
-takeWhile :: (a -> Bool) -> Bundle v a -> Bundle v a
+takeWhile :: (v a -> v a) -> (a -> Bool) -> Bundle v a -> Bundle v a
 {-# INLINE takeWhile #-}
 takeWhile = M.takeWhile
 
